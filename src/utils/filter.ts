@@ -15,7 +15,11 @@ export function sortByDateDesc(items: LostItem[]): LostItem[] {
     const [by, bm, bd] = b.postDate.split('-').map(Number);
     const aTime = new Date(ay, am - 1, ad).getTime();
     const bTime = new Date(by, bm - 1, bd).getTime();
-    return bTime - aTime;
+    if (bTime !== aTime) return bTime - aTime;
+    const aCreated = a.createdAt ?? 0;
+    const bCreated = b.createdAt ?? 0;
+    if (aCreated !== bCreated) return bCreated - aCreated;
+    return 0;
   });
 }
 

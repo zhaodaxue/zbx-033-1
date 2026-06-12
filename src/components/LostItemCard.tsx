@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { ChevronDown, ChevronUp, MapPin, Phone, Calendar, CheckCircle } from 'lucide-react';
 import type { LostItem } from '../types';
 import { useLostItemStore } from '../store/useLostItemStore';
@@ -10,12 +11,31 @@ export function LostItemCard({ item }: LostItemCardProps) {
   const { expandedItemId, toggleExpand, markAsClaimed } = useLostItemStore();
   const isExpanded = expandedItemId === item.id;
 
+  const showDetails = isExpanded;
+
+  const TEN_MINUTES = 10 * 60 * 1000;
+  const [now, setNow] = useState(Date.now());
+
+  useEffect(() => {
+    if (!item.createdAt || item.isClaimed) return;
+    const elapsed = Date.now() - item.createdAt;
+    if (elapsed >= TEN_MINUTES) return;
+    const remaining = TEN_MINUTES - elapsed;
+    const timer = setTimeout(() => setNow(Date.now()), remaining);
+    const interval = setInterval(() => setNow(Date.now()), 30000);
+    return () => {
+      clearTimeout(timer);
+      clearInterval(interval);
+    };
+  }, [item.createdAt, item.isClaimed]);
+
+  const isJustPosted =
+    item.createdAt && !item.isClaimed && now - item.createdAt < TEN_MINUTES;
+
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
     return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
   };
-
-  const showDetails = isExpanded;
 
   return (
     <div
@@ -28,6 +48,14 @@ export function LostItemCard({ item }: LostItemCardProps) {
           <span className="inline-flex items-center gap-1 px-3 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full border border-green-300">
             <CheckCircle size={14} />
             已认领
+          </span>
+        </div>
+      )}
+
+      {isJustPosted && !item.isClaimed && (
+        <div className="absolute top-3 right-3 z-10 print:hidden">
+          <span className="inline-flex items-center gap-1 px-3 py-1 bg-red-50 text-red-600 text-xs font-semibold rounded-full border border-red-200 animate-pulse">
+            刚发布
           </span>
         </div>
       )}

@@ -6,4 +6,5 @@ export interface LostItem {
   contactTail: string;
   postDate: string;
   isClaimed: boolean;
+  createdAt?: number;
 }

@@ -1,9 +1,9 @@
-import { Printer, Filter } from 'lucide-react';
+import { Printer, Filter, PenLine } from 'lucide-react';
 import { useLostItemStore } from '../store/useLostItemStore';
 import { getAllFloors } from '../utils/statistics';
 
 export function Header() {
-  const { items, selectedFloors, onlyUnclaimed, toggleFloor, setOnlyUnclaimed } =
+  const { items, selectedFloors, onlyUnclaimed, toggleFloor, setOnlyUnclaimed, setShowForm } =
     useLostItemStore();
 
   const allFloors = getAllFloors(items);
@@ -70,6 +70,14 @@ export function Header() {
                 />
                 <span className="text-amber-800 text-sm">仅看未认领</span>
               </label>
+
+              <button
+                onClick={() => setShowForm(true)}
+                className="flex items-center gap-2 px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-medium transition-colors shadow-md hover:shadow-lg"
+              >
+                <PenLine size={18} />
+                <span>现场补录</span>
+              </button>
 
               <button
                 onClick={handlePrint}
