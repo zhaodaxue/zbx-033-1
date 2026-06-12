@@ -15,6 +15,8 @@ export function LostItemCard({ item }: LostItemCardProps) {
     return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
   };
 
+  const showDetails = isExpanded;
+
   return (
     <div
       className={`relative bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 ${
@@ -32,7 +34,7 @@ export function LostItemCard({ item }: LostItemCardProps) {
 
       <div
         className="p-5 cursor-pointer print:cursor-default"
-        onClick={() => !item.isClaimed && toggleExpand(item.id)}
+        onClick={() => toggleExpand(item.id)}
       >
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 min-w-0">
@@ -59,36 +61,36 @@ export function LostItemCard({ item }: LostItemCardProps) {
               </span>
             </div>
 
-            {isExpanded && !item.isClaimed && (
+            <div className={`${showDetails ? 'block' : 'hidden'} print:block`}>
               <div className="mt-4 pt-4 border-t border-gray-100">
                 <p className="text-gray-600 leading-relaxed mb-4">
                   {item.description}
                 </p>
 
-                <div className="print:hidden">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      markAsClaimed(item.id);
-                    }}
-                    className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg text-sm font-medium transition-colors shadow-sm"
-                  >
-                    ✓ 标记已认领
-                  </button>
-                </div>
+                {!item.isClaimed && (
+                  <div className="print:hidden">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        markAsClaimed(item.id);
+                      }}
+                      className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg text-sm font-medium transition-colors shadow-sm"
+                    >
+                      ✓ 标记已认领
+                    </button>
+                  </div>
+                )}
               </div>
-            )}
+            </div>
           </div>
 
-          {!item.isClaimed && (
-            <div className="flex-shrink-0 print:hidden">
-              {isExpanded ? (
-                <ChevronUp size={20} className="text-gray-400" />
-              ) : (
-                <ChevronDown size={20} className="text-gray-400" />
-              )}
-            </div>
-          )}
+          <div className="flex-shrink-0 print:hidden">
+            {isExpanded ? (
+              <ChevronUp size={20} className="text-gray-400" />
+            ) : (
+              <ChevronDown size={20} className="text-gray-400" />
+            )}
+          </div>
         </div>
       </div>
 

@@ -10,9 +10,13 @@ export function filterUnclaimed(items: LostItem[]): LostItem[] {
 }
 
 export function sortByDateDesc(items: LostItem[]): LostItem[] {
-  return [...items].sort(
-    (a, b) => new Date(b.postDate).getTime() - new Date(a.postDate).getTime(),
-  );
+  return [...items].sort((a, b) => {
+    const [ay, am, ad] = a.postDate.split('-').map(Number);
+    const [by, bm, bd] = b.postDate.split('-').map(Number);
+    const aTime = new Date(ay, am - 1, ad).getTime();
+    const bTime = new Date(by, bm - 1, bd).getTime();
+    return bTime - aTime;
+  });
 }
 
 export function applyFilters(

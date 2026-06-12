@@ -6,12 +6,14 @@ export function countUnclaimed(items: LostItem[]): number {
 
 export function countNewThisWeek(items: LostItem[]): number {
   const now = new Date();
-  const sevenDaysAgo = new Date();
-  sevenDaysAgo.setDate(now.getDate() - 7);
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const sevenDaysAgoStart = new Date(todayStart);
+  sevenDaysAgoStart.setDate(todayStart.getDate() - 6);
 
   return items.filter((item) => {
-    const postDate = new Date(item.postDate);
-    return postDate >= sevenDaysAgo && postDate <= now;
+    const [year, month, day] = item.postDate.split('-').map(Number);
+    const postDateStart = new Date(year, month - 1, day);
+    return postDateStart >= sevenDaysAgoStart && postDateStart <= todayStart;
   }).length;
 }
 
